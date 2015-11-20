@@ -1,3 +1,5 @@
+var options = ["ctrlKey", "altKey", "shiftKey", "whichKey"]
+
 // Saves options to localStorage.
 function get_selector( id )
 {
@@ -19,30 +21,31 @@ function set_selector( id, favorite )
     }
 }
 
-function save_option(id)
+function save_option(opts, id)
 {
-    localStorage["favorite_" + id ] = get_selector( id );
+    opts[id ] = get_selector( id );
 }
 
-function load_option(id)
+function load_option(opts, id)
 {
-    var favorite = localStorage["favorite_" + id];
+    var favorite = opts[id];
     if (!favorite) {
         return;
     }
     set_selector( id, favorite )
 }
 
-var options = ["ctrlKey", "altKey", "shiftKey", "whichKey"]
 
 function save_options() {
+    var opts = {};
     for (var i = 0; i < options.length; i++) {
         var id = options[i]
             // console.log("i:" + i + " = " + id )
-            save_option(options[i])
+            save_option(opts, id)
     }
-    localStorage["saved"] = true;
+    opts["saved"] = true;
 
+    localStorage["quick_url_copy"] = JSON.stringify(opts, null, '\t');
     // Update status to let user know options were saved.
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
@@ -53,10 +56,11 @@ function save_options() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
+    var opts = JSON.parse(localStorage["quick_url_copy"]);
     for (var i = 0; i < options.length; i++) {
-        var id = options[i]
+        var id = options[i];
             // console.log("i:" + i + " = " + id )
-            load_option(options[i])
+        load_option(opts, id)
     }
 
 }

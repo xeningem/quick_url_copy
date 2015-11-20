@@ -1,0 +1,14 @@
+#rules {
+    display: block;
+}
+
+.rule{
+    display: block;
+    border: thin;
+}
+
+
+label {
+    display: block;
+}
+

@@ -54,10 +54,10 @@ function StringToSend(document_root) {
     
     textMsg = ( box ? box.value : window.document.title ) + "\n " + url;
     var issues = document_root.getElementById("issue_actions_container");
-    if ( issues )
+    var tables = issues.getElementsByTagName("table");
+    if ( tables.length > 0)
     {
         textMsg += "\nRevisions:";
-        var tables = issues.getElementsByTagName("table");
         for( var i = 0; i < tables.length; i++ ) {
             if ( rev_info = LoadRevisionInfoFromTable( tables[i] ) )
                 textMsg += " " + rev_info;

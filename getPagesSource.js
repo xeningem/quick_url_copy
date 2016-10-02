@@ -47,22 +47,29 @@ function LoadRevisionInfoFromTable( table )
     }
 }
 
+function getRevisionInfo(document_root) {
+    var issues = document_root.getElementById("issue_actions_container");
+    var tables = issues && issues.getElementsByTagName("table");
+    var result = "";
+    if (tables && tables.length > 0)
+    {
+        result += "\nRevisions:";
+        for( var i = 0; i < tables.length; i++ ) {
+            if ( rev_info = LoadRevisionInfoFromTable( tables[i] ) )
+                result += " " + rev_info;
+        }
+    }
+    return result;
+}
+
 function StringToSend(document_root) {
     // TODO: Возмоность выбора порядка полей
     var url = window.location.href;
     var box = document_root.getElementById("copy-box");
     
     textMsg = ( box ? box.value : window.document.title ) + "\n " + url;
-    var issues = document_root.getElementById("issue_actions_container");
-    var tables = issues.getElementsByTagName("table");
-    if ( tables.length > 0)
-    {
-        textMsg += "\nRevisions:";
-        for( var i = 0; i < tables.length; i++ ) {
-            if ( rev_info = LoadRevisionInfoFromTable( tables[i] ) )
-                textMsg += " " + rev_info;
-        }
-    }
+    textMsg += getRevisionInfo(document_root);
+
     return textMsg;
 }
 

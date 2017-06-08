@@ -51,22 +51,24 @@ Key for copy:
 </select>
 <div id="defaultRule" style="display: none;">
 <div class="rule">
+  <hr/>
     <label class="rule">
         Hostname: <input type="text" name="host" />
     </label>
 
     <label class="rule">
         Title
-        <input type="text" name="titleSearch"/> =>
+        <input type="text" name="titleSearch"/> to
         <input type="text" name="titleReplace"/>
     </label>
 
 
     <label class="rule">
         Url
-        <input type="text" name="urlSearch"/> =>
+        <input type="text" name="urlSearch"/> to
         <input type="text" name="urlReplace"/>
     </label>
+    <button class="deleteRule">Delete</button>
     <hr/>
 </div>
 </div>
@@ -77,6 +79,7 @@ Key for copy:
 <br>
 <div id="status"></div>
 <button id="save">Save</button>
+<button id="loadRules">Load rules</button>
 </body>
 
 <script src="options.js"></script>

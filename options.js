@@ -43,7 +43,8 @@ function save_options() {
             // console.log("i:" + i + " = " + id )
             save_option(opts, id)
     }
-    opts["saved"] = true;
+    opts["rules"] = load_rules()
+    opts["saved"] = true
 
     localStorage["quick_url_copy"] = JSON.stringify(opts, null, '\t');
     // Update status to let user know options were saved.
@@ -63,16 +64,30 @@ function restore_options() {
     var opts = JSON.parse(jsonOpts);
     for (var i = 0; i < options.length; i++) {
         var id = options[i];
-            // console.log("i:" + i + " = " + id )
         load_option(opts, id)
     }
+    var rules = opts["rules"]
+    if (rules){
+        [].forEach.call(rules, restore_rule)
+    }
+}
+
+function restore_rule(rule)
+{
+    var el = add_new_rule()
+    var elems = el.querySelectorAll('input');
+    [].forEach.call(elems, function(obj) {
+        obj.value = rule[obj.name]
+    });
 }
 
 function add_new_rule(){
     var defRule = document.getElementById("defaultRule");
     var c = defRule.children[0].cloneNode(true);
     var rulesNodes = document.querySelector('#rules');
-    rulesNodes.appendChild(c.cloneNode(true));
+    var child = rulesNodes.appendChild(c.cloneNode(true));
+    child.querySelector('.deleteRule').addEventListener('click', delete_rule);
+    return child;
 }
 
 function load_rules()
@@ -93,10 +108,20 @@ function load_rules()
     };
 
     var rulesElements = document.querySelector('#rules').children;
+    [].forEach.call(rulesElements, loadRule)
+    console.log(rules)
+    return rules
+}
 
-    [].forEach.call(rulesElements, loadRule);
+function delete_rule(el){
+    var elem = el.currentTarget
+    var div = elem.parentNode
+    div.parentNode.removeChild(div)
+    console.log(el, div)
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
 document.querySelector('#save').addEventListener('click', save_options);
 document.querySelector('#addRule').addEventListener('click', add_new_rule);
+document.querySelector('#loadRules').addEventListener('click', load_rules);
+

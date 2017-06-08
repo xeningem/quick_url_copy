@@ -62,21 +62,42 @@ function getRevisionInfo(document_root) {
     return result;
 }
 
-function StringToSend(document_root) {
+function StringToSend(document_root, rules) {
     // TODO: Возмоность выбора порядка полей
     var url = window.location.href;
+    var host = window.location.hostname
     var box = document_root.getElementById("copy-box");
-    
-    textMsg = ( box ? box.value : window.document.title ) + "\n " + url;
+    var title = ( box ? box.value : window.document.title ) 
+
+    console.log(rules, url, host)
+
+    if (rules && rules[host]){
+        rule = rules[host]
+        var re_url = new RegExp(rule.urlSearch)
+        if (url.match(re_url)){
+            url = url.replace(re_url, rule.urlReplace)
+        }
+
+        var re_title = new RegExp(rule.titleSearch)
+        if (title.match(re_title)){
+            title = title.replace(re_title, rule.titleReplace)
+        }
+        console.log("replaced", rules, url, host)
+    }
+
+    var textMsg = title + "\n " + url;
     textMsg += getRevisionInfo(document_root);
 
     return textMsg;
 }
 
-chrome.extension.sendMessage({
-    method: "getSource",
-    source: StringToSend(document)
+
+chrome.storage.sync.get(['rules'], function(values) {
+    // Notify that we saved.
+    console.log('rules', values)
+    chrome.extension.sendMessage({
+        method: "getSource",
+        source: StringToSend(document, values['rules'])
+    });
 });
-
-
 

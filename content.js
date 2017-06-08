@@ -16,6 +16,15 @@ var isOnCtrl = true
 var isOnShift = false
 var isOnAlt = true
 var isWhichKey = "C"
+var rules = {
+    'www.dw.com': {
+        host: "www.dw.com",
+        titleReplace: "$1",
+        titleSearch: "(.*) (\\| .*){3}",
+        urlReplace: "$1/$3",
+        urlSearch: "(http:\\/\\/www\\.dw\\.com\\/.*)\\/(.*)\\/(.*)"
+    }
+}
 
 function isOn(isOnKey, key) {
     return (isOnKey == key)
@@ -28,12 +37,13 @@ function isCopyKey(event) {
 }
 
 function restore_options(local_storage) {
-    // console.log("restore_options", local_storage);
+    console.log("restore_options", local_storage);
 
     isOnCtrl = load_option(local_storage, "ctrlKey", true);
     isOnShift = load_option(local_storage, "shiftKey", false);
     isOnAlt = load_option(local_storage, "altKey", true);
     isWhichKey = load_option(local_storage, "whichKey", "C");
+
 }
 
 document.addEventListener('keydown', function(event) {
@@ -54,15 +64,26 @@ chrome.runtime.sendMessage({ method: "requestLocalStorage" });
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // console.log(request);
     if (request.method == "responseLocalStorage" ) {
+        console.log("on content.js")
         var l_s = request.local_storage;
         if (  l_s["saved"] )
-{
-    restore_options(l_s);
-}
+        {
+            restore_options(l_s);
+        }
 
 }
 });
 
+ chrome.storage.sync.get(['rules'], function(values) {
+          // Notify that we saved.
+     console.log('rules in content.js', values)
+    if(!values["rules"]){
+         chrome.storage.sync.set({'rules': rules}, function(values) {
+            console.log('set in content.js', values)
+        });
+    }
+
+        });
 
 // Нужно добавить сохранение tab.id для того, чтобы при сохранении настроек
 // обновлять вкладки

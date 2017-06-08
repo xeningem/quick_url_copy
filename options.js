@@ -40,11 +40,14 @@ function save_options() {
     var opts = {};
     for (var i = 0; i < options.length; i++) {
         var id = options[i]
-            // console.log("i:" + i + " = " + id )
             save_option(opts, id)
     }
     opts["rules"] = load_rules()
     opts["saved"] = true
+     chrome.storage.sync.set({'rules': opts["rules"]}, function(values) {
+          // Notify that we saved.
+            console.log('set in options rules', values)
+        });
 
     localStorage["quick_url_copy"] = JSON.stringify(opts, null, '\t');
     // Update status to let user know options were saved.
@@ -66,10 +69,18 @@ function restore_options() {
         var id = options[i];
         load_option(opts, id)
     }
-    var rules = opts["rules"]
-    if (rules){
-        [].forEach.call(rules, restore_rule)
-    }
+
+    chrome.storage.sync.get(["rules"], function(values) {
+        // Notify that we saved.
+        console.log('get in options rules', values)
+        var rules = values["rules"]
+        for(var key in rules){
+            restore_rule(rules[key])
+        }
+    });
+
+
+
 }
 
 function restore_rule(rule)
@@ -92,7 +103,7 @@ function add_new_rule(){
 
 function load_rules()
 {
-    var rules = [];
+    var rules = {};
     var loadRule = function(el){
         var elems = el.querySelectorAll('input');
         var dict = {};
@@ -103,7 +114,7 @@ function load_rules()
 
         if (Object.keys(dict).length !== 0 && dict.host.length > 0)
         {
-            rules.push(dict);
+            rules[dict.host] = dict;
         }
     };
 

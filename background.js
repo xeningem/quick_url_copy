@@ -10,8 +10,7 @@ function copy_text() {
             message.innerText = 'There was an error injecting script : \n' + chrome.extension.lastError.message;
             console.error(message.innerText);
         }
-    });
-
+    }); 
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {

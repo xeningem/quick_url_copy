@@ -20,5 +20,5 @@
         "page": "background.html"
     },
     "options_page": "options.html",
-    "permissions": ["activeTab", "tabs", "clipboardWrite", "<all_urls>" ]
+    "permissions": ["activeTab", "tabs", "clipboardWrite", "<all_urls>", "storage" ]
 }

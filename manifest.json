@@ -1,6 +1,6 @@
 {
     "name": "Quick URL copy",
-    "version": "1.0.4",
+    "version": "1.1",
     "manifest_version": 2,
     "description": "Copy url and description",
     "browser_action": {
@@ -16,9 +16,6 @@
         "matches": [ "*://*/*", "file:///*:/*/*" ],
         "js": [ "content.js" ]
     }],
-    "background": {
-        "page": "background.html"
-    },
     "options_page": "options.html",
-    "permissions": ["activeTab", "tabs", "clipboardWrite", "<all_urls>", "storage" ]
+    "permissions": ["activeTab", "storage" ]
 }

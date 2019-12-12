@@ -46,56 +46,6 @@ function restore_options(local_storage) {
 
 }
 
-function getJiraTaskInfo(document_root) {
-    var issueKeyVal = document_root.getElementById("issuekey-val")
-    if (!issueKeyVal){
-        return "";
-    }
-
-    var summaryVal = document_root.getElementById("summary-val")
-    if (!summaryVal){
-        return "";
-    }
-
-    var issue = issueKeyVal.children[0]
-
-
-    return issue.textContent + " " + summaryVal.textContent + "\n" + issue.href;
-}
-
-
-function StringToSend(document_root, rules) {
-    // TODO: Возмоность выбора порядка полей
-    var url = window.location.href;
-    var host = window.location.hostname
-    var box = document_root.getElementById("copy-box");
-    var title = ( box ? box.value : window.document.title )
-
-    if(document_root.getElementById("jira") != null){
-        var issue_info = getJiraTaskInfo(document_root)
-        if(issue_info){
-            return issue_info
-        }
-    } 
-
-
-    if (rules && rules[host]){
-        rule = rules[host]
-        var re_url = new RegExp(rule.urlSearch)
-        if (url.match(re_url)){
-            url = url.replace(re_url, rule.urlReplace)
-        }
-
-        var re_title = new RegExp(rule.titleSearch)
-        if (title.match(re_title)){
-            title = title.replace(re_title, rule.titleReplace)
-        }
-    }
-
-    var textMsg = title + "\n " + url;
-
-    return textMsg;
-}
 
 
 document.addEventListener('keydown', function(event) {
@@ -107,11 +57,19 @@ document.addEventListener('keydown', function(event) {
 
         var textToSend = StringToSend(document, null)
 
+        if (navigator.clipboard){
         navigator.clipboard.writeText(textToSend)
           .catch(err => {
             // This can happen if the user denies clipboard permissions:
             console.error('Could not copy text: ', err);
+
           });
+      }else{
+        chrome.runtime.sendMessage({
+                method: "backgroundCopy",
+                text: textToSend
+        });
+      }
     }
 },
 true); // <-- True is important

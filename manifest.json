@@ -1,11 +1,14 @@
 {
     "name": "Quick URL copy",
-    "version": "1.1",
+    "version": "1.5",
+    "version_name": "Remove UTM marks",
     "manifest_version": 2,
-    "description": "Copy url and description",
+    "description": "Copy current page URL and description to clipboard by hotkey (Ctrl+Alt+C)",
+    "short_name": "Copy page info",
     "browser_action": {
         "default_icon": "icon128.png"
     },
+    "homepage_url": "https://github.com/xeningem/quick_url_copy",
     "icons": { 
         "16": "icon16.png",
         "32": "icon32.png",
@@ -14,8 +17,12 @@
         "128": "icon128.png" },
     "content_scripts": [{
         "matches": [ "*://*/*", "file:///*:/*/*" ],
-        "js": [ "content.js" ]
+        "js": [ "getText.js", "content.js" ]
     }],
+    "background": {
+        "persistent": false,
+        "page": "background.html"
+    },
     "options_page": "options.html",
-    "permissions": ["activeTab", "storage" ]
+    "permissions": ["activeTab", "clipboardWrite", "storage" ]
 }

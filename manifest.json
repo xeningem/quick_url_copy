@@ -1,7 +1,7 @@
 {
     "name": "Quick URL copy",
-    "version": "1.5",
-    "version_name": "Remove UTM marks",
+    "version": "1.5.1",
+    "version_name": "UX strikes back",
     "manifest_version": 2,
     "description": "Copy current page URL and description to clipboard by hotkey (Ctrl+Alt+C)",
     "short_name": "Copy page info",

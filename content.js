@@ -22,8 +22,13 @@ var rules = {
         titleReplace: "$1",
         titleSearch: "(.*) (\\| .*){3}",
         urlReplace: "$1/$3",
-        urlSearch: "(http:\\/\\/www\\.dw\\.com\\/.*)\\/(.*)\\/(.*)"
-    }
+        urlSearch: "(.*)\/(.*)\/(.*)"
+    },
+    'medium.com': {
+        host: "medium.com",
+        urlReplace: "$1/$3",
+        urlSearch: "(.*)\/(.*)(-(?:.(?!-))+)$"
+    },
 }
 
 function isOn(isOnKey, key) {
@@ -55,7 +60,7 @@ document.addEventListener('keydown', function(event) {
         // console.log("Keydown:" + event + " " + event.which);
 
 
-        var textToSend = StringToSend(document, null)
+        var textToSend = StringToSend(document, rules)
 
         if (navigator.clipboard){
         navigator.clipboard.writeText(textToSend)
@@ -95,6 +100,3 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 
         });
-
-// Нужно добавить сохранение tab.id для того, чтобы при сохранении настроек
-// обновлять вкладки

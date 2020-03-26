@@ -44,7 +44,7 @@ function StringToSend(document_root, rules) {
 
     // Remove UTM marks
     var url_obj = new URL(window.location.href);
-    var utm_marks = ["fbclid", "utm_campaign", "utm_medium", "utm_source"];
+    var utm_marks = ["fbclid", "utm_campaign", "utm_medium", "utm_source", "utm_term", "utm_content"];
     for (var i = 0; i < utm_marks.length; i++) {
         url_obj.searchParams.delete(utm_marks[i]);
     }

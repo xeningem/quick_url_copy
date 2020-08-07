@@ -23,7 +23,7 @@ function set_selector( id, favorite )
 
 function save_option(opts, id)
 {
-    opts[id ] = get_selector( id );
+    opts[id] = get_selector( id );
 }
 
 function load_option(opts, id)

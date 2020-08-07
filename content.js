@@ -27,7 +27,12 @@ var rules = {
     'medium.com': {
         host: "medium.com",
         urlReplace: "$1/$3",
-        urlSearch: "(.*)\/(.*)(-(?:.(?!-))+)$"
+        urlSearch: "(.*)\/(.*)-((?:.(?!-))+)$"
+    },
+    'zen.yandex.ru': {
+        host: "zen.yandex.ru",
+        urlReplace: "$1/$3",
+        urlSearch: "(.*)\/(.*)-((?:.(?!-))+)$"
     },
 }
 

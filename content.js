@@ -36,8 +36,7 @@ function isOn(isOnKey, key) {
 }
 
 function isCopyKey(event) {
-    result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && isOn(isOnAlt, event.altKey) && (String.fromCharCode(event.which) == isWhichKey);
-
+    result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && (isOn(isOnAlt, event.metaKey) || isOn(isOnAlt, event.altKey)) && (String.fromCharCode(event.which) == isWhichKey);
     return result
 }
 

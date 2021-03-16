@@ -29,6 +29,18 @@ var rules = {
         urlReplace: "$1/$3",
         urlSearch: "(.*)\/(.*)(-(?:.(?!-))+)$"
     },
+    'trello.com': {
+        host: "trello.com",
+        titleReplace: "$1",
+        titleSearch: "(.*) \\| (.*)",
+        urlReplace: "$1/$2",
+        urlSearch: "(.*)\/(.*)\/(.*)"
+    },
+    'youtube.com': {
+        host: "youtube.com",
+        titleReplace: "$1",
+        titleSearch: "^(?:\(.*\) )?(.*)(?:- YouTube)$",
+    },
 }
 
 function isOn(isOnKey, key) {
@@ -36,6 +48,7 @@ function isOn(isOnKey, key) {
 }
 
 function isCopyKey(event) {
+    console.log("event.which", event.which, event);     
     result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && (isOn(isOnAlt, event.metaKey) || isOn(isOnAlt, event.altKey)) && (String.fromCharCode(event.which) == isWhichKey);
     return result
 }

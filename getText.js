@@ -26,6 +26,16 @@ function getJiraTaskInfo(document_root) {
     return "[" + issue.textContent + "] " + summaryVal.textContent + "\n" + issue.href;
 }
 
+function getCikInfo(document_root, title, url) {
+    var row_info = document_root.querySelector("body > table:nth-child(3) > tbody > tr:nth-child(1) > td")
+    if (row_info)
+    {
+        return title + ': ' + row_info.textContent.trim() + "\n" + url;
+    }
+
+    return ""
+}
+
 
 function StringToSend(document_root, rules) {
     // TODO: Возмоность выбора порядка полей
@@ -41,6 +51,12 @@ function StringToSend(document_root, rules) {
         }
     } 
 
+    if (url.search("izbirkom.ru") > 0){
+        var cik_info = getCikInfo(document_root, title, url)
+        if(cik_info){
+            return cik_info
+        }
+    }
 
     // Remove UTM marks
     var url_obj = new URL(window.location.href);

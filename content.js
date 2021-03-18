@@ -17,8 +17,8 @@ var isOnShift = false
 var isOnAlt = true
 var isWhichKey = "C"
 var rules = {
-    'www.dw.com': {
-        host: "www.dw.com",
+    'dw.com': {
+        host: "dw.com",
         titleReplace: "$1",
         titleSearch: "(.*) (\\| .*){3}",
         urlReplace: "$1/$3",

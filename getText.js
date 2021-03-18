@@ -66,9 +66,10 @@ function StringToSend(document_root, rules) {
     }
 
     var url = url_obj.toString();
+    var host_test = host.replace('www.', '')
 
-    if (rules && rules[host]){
-        var rule = rules[host]
+    if (rules && rules[host_test]){
+        var rule = rules[host_test]
         if (rule.urlSearch){
             var re_url = new RegExp(rule.urlSearch)
             if (url.match(re_url)){

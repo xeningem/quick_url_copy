@@ -26,6 +26,25 @@ function getJiraTaskInfo(document_root) {
     return "[" + issue.textContent + "] " + summaryVal.textContent + "\n" + issue.href;
 }
 
+function export2csv(tableElement) {
+    let data = "";
+    const tableData = [];
+    const rows = tableElement.querySelectorAll("tr");
+    for (const row of rows) {
+      const rowData = [];
+      for (const [index, column] of row.querySelectorAll("th, td").entries()) {
+        // To retain the commas in the "Description" column, we can enclose those fields in quotation marks.
+        if ((index + 1) % 3 === 0) {
+          rowData.push('"' + column.innerText + '"');
+        } else {
+          rowData.push(column.innerText);
+        }
+      }
+      tableData.push(rowData.join(","));
+    }
+    data += tableData.join("\n");
+    return data;
+}
 
 function StringToSend(document_root, rules) {
     // TODO: Возмоность выбора порядка полей
@@ -49,6 +68,27 @@ function StringToSend(document_root, rules) {
         url_obj.searchParams.delete(utm_marks[i]);
     }
 
+    if (url.includes(".izbirkom.ru")){
+        console.log("This is IZBIRKOM!!!")
+
+        document.querySelector("#report-body\\ col > div.row.tab-pane.active.show > div > table:nth-child(3) > tbody > tr > td:nth-child(1)")
+
+        const electionDate = Array.from(document.querySelectorAll('td'))
+        ?.find(el => el.textContent.includes('Дата голосования'))?.textContent || "";
+        const commisionInfo = document.querySelector('td[width="30%"]')?.parentElement?.textContent || "";
+
+        var textResult =  title + " \n" + url; 
+        
+        textResult += " \n" + commisionInfo.replace(/(\r\n|\n|\r)/gm, " ") 
+        + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ");
+
+        var cikDataTable = document.querySelector("div.table-responsive > table");
+        textResult += " \n" + export2csv(cikDataTable);
+
+        return textResult;
+    }
+
+
     var url = url_obj.toString();
 
     if (rules && rules[host]){
@@ -69,6 +109,5 @@ function StringToSend(document_root, rules) {
     }
 
     var textMsg = title + " \n" + url;
-
     return textMsg;
 }

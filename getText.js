@@ -32,9 +32,12 @@ function export2csv(tableElement) {
     const rows = tableElement.querySelectorAll("tr");
     for (const row of rows) {
       const rowData = [];
-      for (const [index, column] of row.querySelectorAll("th, td").entries()) {
+      for (let [index, column] of row.querySelectorAll("th, td").entries()) {
+          if (column.querySelector("nobr")){
+              column = column.querySelector("nobr");
+          }
         // To retain the commas in the "Description" column, we can enclose those fields in quotation marks.
-        if ((index + 1) % 3 === 0) {
+        if (column.innerText.includes(",")) {
           rowData.push('"' + column.innerText + '"');
         } else {
           rowData.push(column.innerText);
@@ -71,8 +74,6 @@ function StringToSend(document_root, rules) {
     if (url.includes(".izbirkom.ru")){
         console.log("This is IZBIRKOM!!!")
 
-        document.querySelector("#report-body\\ col > div.row.tab-pane.active.show > div > table:nth-child(3) > tbody > tr > td:nth-child(1)")
-
         const electionDate = Array.from(document.querySelectorAll('td'))
         ?.find(el => el.textContent.includes('Дата голосования'))?.textContent || "";
         const commisionInfo = document.querySelector('td[width="30%"]')?.parentElement?.textContent || "";
@@ -83,7 +84,16 @@ function StringToSend(document_root, rules) {
         + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ");
 
         var cikDataTable = document.querySelector("div.table-responsive > table");
-        textResult += " \n" + export2csv(cikDataTable);
+        if (cikDataTable){
+            textResult += " \n" + export2csv(cikDataTable);
+        }
+
+
+        var cikFixedColumnsDataTable = document.querySelector("table.table-fixed-columns");
+        if (cikFixedColumnsDataTable){
+            textResult += " \n" + export2csv(cikFixedColumnsDataTable);
+        }
+
 
         return textResult;
     }

@@ -17,8 +17,8 @@ var isOnShift = false
 var isOnAlt = true
 var isWhichKey = "C"
 var rules = {
-    'www.dw.com': {
-        host: "www.dw.com",
+    'dw.com': {
+        host: "dw.com",
         titleReplace: "$1",
         titleSearch: "(.*) (\\| .*){3}",
         urlReplace: "$1/$3",
@@ -34,6 +34,18 @@ var rules = {
         urlReplace: "$1/$3",
         urlSearch: "(.*)\/(.*)-((?:.(?!-))+)$"
     },
+    'trello.com': {
+        host: "trello.com",
+        titleReplace: "$1",
+        titleSearch: "(.*) \\| (.*)",
+        urlReplace: "$1/$2",
+        urlSearch: "(.*)\/(.*)\/(.*)"
+    },
+    'youtube.com': {
+        host: "youtube.com",
+        titleReplace: "$1",
+        titleSearch: "^(?:\(.*\) )?(.*)(?:- YouTube)$",
+    },
 }
 
 function isOn(isOnKey, key) {
@@ -41,8 +53,8 @@ function isOn(isOnKey, key) {
 }
 
 function isCopyKey(event) {
-    result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && isOn(isOnAlt, event.altKey) && (String.fromCharCode(event.which) == isWhichKey);
-
+    console.log("event.which", event.which, event);     
+    result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && (isOn(isOnAlt, event.metaKey) || isOn(isOnAlt, event.altKey)) && (String.fromCharCode(event.which) == isWhichKey);
     return result
 }
 

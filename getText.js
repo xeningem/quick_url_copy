@@ -48,6 +48,16 @@ function export2csv(tableElement) {
     data += tableData.join("\n");
     return data;
 }
+function getCikInfo(document_root, title, url) {
+    var row_info = document_root.querySelector("body > table:nth-child(3) > tbody > tr:nth-child(1) > td")
+    if (row_info)
+    {
+        return title + ': ' + row_info.textContent.trim() + "\n" + url;
+    }
+
+    return ""
+}
+
 
 function StringToSend(document_root, rules) {
     // TODO: Возмоность выбора порядка полей
@@ -63,6 +73,7 @@ function StringToSend(document_root, rules) {
         }
     } 
 
+    
 
     // Remove UTM marks
     var url_obj = new URL(window.location.href);
@@ -100,9 +111,10 @@ function StringToSend(document_root, rules) {
 
 
     var url = url_obj.toString();
+    var host_test = host.replace('www.', '')
 
-    if (rules && rules[host]){
-        var rule = rules[host]
+    if (rules && rules[host_test]){
+        var rule = rules[host_test]
         if (rule.urlSearch){
             var re_url = new RegExp(rule.urlSearch)
             if (url.match(re_url)){

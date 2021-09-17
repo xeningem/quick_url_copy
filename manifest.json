@@ -1,7 +1,7 @@
 {
     "name": "Quick URL copy",
-    "version": "1.5.2",
-    "version_name": "This is IZBIRKOM!!!111",
+    "version": "1.5.6",
+    "version_name": "Make title useful again for izbirkom.ru",
     "manifest_version": 2,
     "description": "Copy current page URL and description to clipboard by hotkey (Ctrl+Alt+C)",
     "short_name": "Copy page info",

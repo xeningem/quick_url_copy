@@ -2,7 +2,7 @@
 
 function load_option(local_storage, id, pref) {
     local_storage = local_storage || localStorage;
-    var favorite = local_storage["favorite_" + id];
+    var favorite = local_storage[id];
     if (!favorite) {
         return pref;
     }
@@ -16,6 +16,9 @@ var isOnCtrl = true
 var isOnShift = false
 var isOnAlt = true
 var isWhichKey = "C"
+
+var izbirkomMode = 0
+
 var rules = {
     'dw.com': {
         host: "dw.com",
@@ -53,45 +56,49 @@ function isOn(isOnKey, key) {
 }
 
 function isCopyKey(event) {
-    console.log("event.which", event.which, event);     
     result = isOn(isOnCtrl, event.ctrlKey) && isOn(isOnShift, event.shiftKey) && (isOn(isOnAlt, event.metaKey) || isOn(isOnAlt, event.altKey)) && (String.fromCharCode(event.which) == isWhichKey);
     return result
 }
 
 function restore_options(local_storage) {
-    console.log("restore_options", local_storage);
-
     isOnCtrl = load_option(local_storage, "ctrlKey", true);
     isOnShift = load_option(local_storage, "shiftKey", false);
     isOnAlt = load_option(local_storage, "altKey", true);
     isWhichKey = load_option(local_storage, "whichKey", "C");
 
+    if (load_option(local_storage, "izbirkom_default", false)){
+        izbirkomMode = 0
+    } else if (load_option(local_storage, "izbirkom_copytable", false)){
+        izbirkomMode = 1
+    } else if (load_option(local_storage, "izbirkom_copytableonly", false)){
+        izbirkomMode = 2
+    }
 }
 
 
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     // Ctrl+Alt+C
     if (isCopyKey(event)) {
         // Dispatch a custom message, handled by your extension
         // console.log("Keydown:" + event + " " + event.which);
 
 
-        var textToSend = StringToSend(document, rules)
+        var textToSend = StringToSend(document, rules, izbirkomMode)
 
-        if (navigator.clipboard){
-        navigator.clipboard.writeText(textToSend)
-          .catch(err => {
-            // This can happen if the user denies clipboard permissions:
-            console.error('Could not copy text: ', err);
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(textToSend)
+                .catch(err => {
+                    // This can happen if the user denies clipboard permissions:
+                    console.error('Could not copy text: ', err);
 
-          });
-      }else{
-        chrome.runtime.sendMessage({
+                });
+        } else {
+            chrome.runtime.sendMessage({
                 method: "backgroundCopy",
                 text: textToSend
-        });
-      }
+            });
+        }
     }
 },
 true); // <-- True is important
@@ -99,12 +106,12 @@ true); // <-- True is important
 chrome.runtime.sendMessage({ method: "requestLocalStorage" });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    // console.log(request);
     if (request.method == "responseLocalStorage" ) {
         var l_s = request.local_storage;
-        if (  l_s["saved"] )
+        if (l_s.quick_url_copy)
         {
-            restore_options(l_s);
+            const ls_settings = JSON.parse(l_s.quick_url_copy)
+            restore_options(ls_settings);
         }
 
 }

@@ -26,12 +26,15 @@ function getJiraTaskInfo(document_root) {
     return "[" + issue.textContent + "] " + summaryVal.textContent + "\n" + issue.href;
 }
 
-function export2csv(tableElement) {
+function export2csv(tableElement, separator=',', firstColumn=null) {
     let data = "";
     const tableData = [];
     const rows = tableElement.querySelectorAll("tr");
     for (const row of rows) {
       const rowData = [];
+      if (firstColumn){
+          rowData.push('"' + firstColumn + '"');
+      }
       for (let [index, column] of row.querySelectorAll("th, td").entries()) {
           if (column.querySelector("nobr")){
               column = column.querySelector("nobr");
@@ -43,11 +46,12 @@ function export2csv(tableElement) {
           rowData.push(column.innerText);
         }
       }
-      tableData.push(rowData.join(","));
+      tableData.push(rowData.join(separator));
     }
-    data += tableData.join("\n");
+    data += tableData.join("\r\n");
     return data;
 }
+
 function getCikInfo(document_root, title, url) {
     var row_info = document_root.querySelector("body > table:nth-child(3) > tbody > tr:nth-child(1) > td")
     if (row_info)
@@ -59,7 +63,7 @@ function getCikInfo(document_root, title, url) {
 }
 
 
-function StringToSend(document_root, rules) {
+function StringToSend(document_root, rules, izbirkomMode) {
     // TODO: Возмоность выбора порядка полей
     var url = window.location.href;
     var host = window.location.hostname
@@ -73,8 +77,6 @@ function StringToSend(document_root, rules) {
         }
     } 
 
-    
-
     // Remove UTM marks
     var url_obj = new URL(window.location.href);
     var utm_marks = ["fbclid", "utm_campaign", "utm_medium", "utm_source", "utm_term", "utm_content"];
@@ -83,28 +85,37 @@ function StringToSend(document_root, rules) {
     }
 
     if (url.includes(".izbirkom.ru")){
-        console.log("This is IZBIRKOM!!!")
+        console.log("THIS IS IZBIRKOM", izbirkomMode);
+        var textResult =  ""
+        const pageBreadCrumbs = Array.from(document.querySelectorAll("ul.breadcrumb > li"))?.slice(1)?.map(x=> x.textContent)?.join(" - ")?.replace(/(\r\n|\n|\r|\t|\u2002⁄\u2002)/gm, "") 
+        if (izbirkomMode == 0 || izbirkomMode == 1){
+            textResult = (pageBreadCrumbs || title) + " \n" + url; 
+        }
 
-        const electionDate = Array.from(document.querySelectorAll('td'))
-        ?.find(el => el.textContent.includes('Дата голосования'))?.textContent || "";
-        const commisionInfo = document.querySelector('td[width="30%"]')?.parentElement?.textContent || "";
+        if (izbirkomMode == 0){
+            return textResult;
+        }
 
-        var textResult =  title + " \n" + url; 
-        
-        textResult += " \n" + commisionInfo.replace(/(\r\n|\n|\r)/gm, " ") 
-        + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ");
+ 
+        if (izbirkomMode == 1){
+            const electionDate = Array.from(document.querySelectorAll('td'))
+            ?.find(el => el.textContent.includes('Дата голосования'))?.textContent || "";
+
+            const commisionInfo = document.querySelector('td[width="30%"]')?.parentElement?.textContent || "";
+
+            textResult += " \n" + commisionInfo.replace(/(\r\n|\n|\r)/gm, " ") 
+            + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ");
+        }
 
         var cikDataTable = document.querySelector("div.table-responsive > table");
         if (cikDataTable){
-            textResult += " \n" + export2csv(cikDataTable);
+            textResult += " \n" + export2csv(cikDataTable, '\t', pageBreadCrumbs);
         }
-
 
         var cikFixedColumnsDataTable = document.querySelector("table.table-fixed-columns");
         if (cikFixedColumnsDataTable){
-            textResult += " \n" + export2csv(cikFixedColumnsDataTable);
+            textResult += " \n" + export2csv(cikFixedColumnsDataTable, '\t', pageBreadCrumbs);
         }
-
 
         return textResult;
     }

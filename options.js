@@ -1,9 +1,12 @@
-var options = ["ctrlKey", "altKey", "shiftKey", "whichKey"]
+var options = ["ctrlKey", "altKey", "shiftKey", "whichKey", "izbirkom_default", "izbirkom_copytable", "izbirkom_copytableonly",]
 
 // Saves options to localStorage.
 function get_selector( id )
 {
     var select = document.getElementById( id );
+    if (select.type==='radio'){
+            return select.checked;
+    }
     var value = select.children[select.selectedIndex].value;
     return value;
 }
@@ -11,6 +14,10 @@ function get_selector( id )
 function set_selector( id, favorite )
 {
     var select = document.getElementById( id );
+    if (select.type==='radio'){
+        select.checked = true;
+        return;
+    }
 
     for (var i = 0; i < select.children.length; i++) {
         var child = select.children[i];

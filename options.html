@@ -3,6 +3,29 @@
 <head>
 <title>My Test Extension Options</title>
 <link rel="stylesheet" type="text/css" href="style.css" >
+<style>
+.checkboxgroup > ul {
+  padding-left: 0;
+}
+
+.checkboxgroup > ul > li {
+  padding-left: 0;
+}
+
+.checkboxgroup{
+    width: 25em;
+    overflow: auto;
+}
+.checkboxgroup p{ 
+    text-align: right;
+}
+.checkboxgroup label{
+    width: 22em;
+    float: right;
+}
+
+
+</style>
 </head>
 
 <body>
@@ -77,8 +100,21 @@ Key for copy:
 <button id="addRule">Add new rule</button>
 <br>
 <br>
+<div>
+  <b>izbirkom.ru</b><br/> 
+
+  
+<fieldset class="checkboxgroup">
+  <p>How to copy info from izbirkom.ru page</p>
+  <ul>
+    <li><input type="radio" name="izbirkom_mode" id="izbirkom_default" value="0"> <label for="izbirkom_default">Default (copy title and URL)</label></li>
+    <li><input type="radio" name="izbirkom_mode" id="izbirkom_copytable" value="1"> <label for="izbirkom_copytable">Breadcrumbs/title, URL and table</label></li>
+    <li><input type="radio" name="izbirkom_mode" id="izbirkom_copytableonly" value="2"> <label for="izbirkom_copytableonly">Table only</label></li>
+  </ul>
+</fieldset>
+</div>
 <div id="status"></div>
-<button id="save">Save</button>
+<button id="save">Save rules</button>
 <button id="loadRules">Load rules</button>
 </body>
 

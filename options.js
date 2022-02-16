@@ -127,7 +127,6 @@ function load_rules()
 
     var rulesElements = document.querySelector('#rules').children;
     [].forEach.call(rulesElements, loadRule)
-    console.log(rules)
     return rules
 }
 

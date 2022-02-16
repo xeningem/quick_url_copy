@@ -4,7 +4,7 @@ function getJiraTaskInfo(document_root) {
     {
         var x = issues[0]
         var ghxIssueKey = x.attributes["data-issue-key"]?.textContent
-        var ghxSummary = x.querySelector("section.ghx-summary")?.textContent
+        var ghxSummary = x.querySelector(".ghx-summary")?.textContent
         var ghxIssueLink = x.querySelector("a")?.href
         return "[" + ghxIssueKey+ "] " + ghxSummary + "\n" + ghxIssueLink;
     }
@@ -30,21 +30,28 @@ function export2csv(tableElement, separator=',', firstColumn=null) {
     let data = "";
     const tableData = [];
     const rows = tableElement.querySelectorAll("tr");
+    let i = 0;
     for (const row of rows) {
       const rowData = [];
       if (firstColumn){
-          rowData.push('"' + firstColumn + '"');
+          if (i == 0){
+            rowData.push('"' + firstColumn + '+');
+        }
       }
-      for (let [index, column] of row.querySelectorAll("th, td").entries()) {
+      for (let [index, column] of row.querySelectorAll(" td").entries()) {
           if (column.querySelector("nobr")){
               column = column.querySelector("nobr");
           }
-        // To retain the commas in the "Description" column, we can enclose those fields in quotation marks.
-        if (column.innerText.includes(",")) {
-          rowData.push('"' + column.innerText + '"');
-        } else {
-          rowData.push(column.innerText);
-        }
+
+          if (column.innerText.includes(",")) {
+            rowData.push('"' + column.innerText + '"');
+          } else {
+            rowData.push(column.innerText);
+          }
+  
+      }
+      if (rowData.length==0){
+          continue; 
       }
       tableData.push(rowData.join(separator));
     }
@@ -79,7 +86,7 @@ function StringToSend(document_root, rules, izbirkomMode) {
 
     // Remove UTM marks
     var url_obj = new URL(window.location.href);
-    var utm_marks = ["fbclid", "utm_campaign", "utm_medium", "utm_source", "utm_term", "utm_content"];
+    var utm_marks = ["fbclid", "utm_campaign", "utm_medium", "utm_source", "utm_term", "utm_content", "utm_term", ];
     for (var i = 0; i < utm_marks.length; i++) {
         url_obj.searchParams.delete(utm_marks[i]);
     }
@@ -104,17 +111,17 @@ function StringToSend(document_root, rules, izbirkomMode) {
             const commisionInfo = document.querySelector('td[width="30%"]')?.parentElement?.textContent || "";
 
             textResult += " \n" + commisionInfo.replace(/(\r\n|\n|\r)/gm, " ") 
-            + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ");
+            + " \n" + electionDate.replace(/(\r\n|\n|\r)/gm, " ") + " \n";
         }
 
         var cikDataTable = document.querySelector("div.table-responsive > table");
         if (cikDataTable){
-            textResult += " \n" + export2csv(cikDataTable, '\t', pageBreadCrumbs);
+            textResult += export2csv(cikDataTable, '\t');
         }
 
         var cikFixedColumnsDataTable = document.querySelector("table.table-fixed-columns");
         if (cikFixedColumnsDataTable){
-            textResult += " \n" + export2csv(cikFixedColumnsDataTable, '\t', pageBreadCrumbs);
+            textResult += export2csv(cikFixedColumnsDataTable, '\t');
         }
 
         return textResult;
